@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>微信JSSDK通过config接口注入权限验证配置</title>
+    <meta name="author" content="TigerWang">
+    <script src="js/jquery-3.1.1.min.js"></script>
+    <link rel="stylesheet" href="css/main.css"/>
+    <script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+</head>
+
+<body>
+  <div id="button_choose_image" class="tw_button">Click me to choose image</div>
+    <script src="bundle.js"></script>
+    <script language="javascript">
+        $(document).ready(function() {
+          //请将这里的地址切换成部署获取签名部分部分的API地址
+            var signature_api = "http://192.168.33.100:3000/signature";
+            //这个地址必须是经过微信开放平台绑定域名的网页部署地址，方可认证成功
+            var page_url = "http://192.168.33.100:3000";
+            var timestamp = Date.now();
+            $.get(signature_api + "?time_stamp=" + timestamp +"&page_url="+page_url ,
+            function(data) {
+                var signature = data["signature"];
+                var nonce = data["nonce"];
+                wx.config({
+                    debug: true,
+                    appId: '你的微信AppId',
+                    timestamp: timestamp,
+                    nonceStr: nonce,
+                    signature: signature,
+                    jsApiList: ['chooseImage', 'uploadImage', 'downloadImage']
+                });
+                wx.ready(function() {
+                    $("#button_choose_image").on("click", function() {
+                        wx.chooseImage({
+                            count: 1, // 默认9
+                            sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
+                            sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
+                            success: function(res) {
+                                var localIds = res.localIds; // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
+                            }
+                        });
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,14 @@
+html,body {
+    background-color: white;
+    margin: auto;
+}
+
+.tw_button {
+  width: 100%;
+  background: black;
+  height: 500px;
+  text-align: center;
+  font-size: 50px;
+  padding: 200px 0px;
+  color: white;
+}
